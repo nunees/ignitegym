@@ -12,6 +12,7 @@ import { Loading } from "@components/Loading";
 import { THEME } from "./src/theme";
 
 import { Routes } from "./src/routes";
+import { Home } from "@screens/Home";
 
 export default function App() {
   LogBox.ignoreLogs([
