@@ -10,8 +10,8 @@ import {
 
 import { Loading } from "@components/Loading";
 import { THEME } from "./src/theme";
-import { SignIn } from "@screens/Signin";
-import { SignUp } from "@screens/Signup";
+
+import { Routes } from "./src/routes";
 
 export default function App() {
   LogBox.ignoreLogs([
@@ -26,7 +26,7 @@ export default function App() {
         backgroundColor="transparent"
         translucent
       />
-      {fontsLoaded ? <SignUp /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 }
