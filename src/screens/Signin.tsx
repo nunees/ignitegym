@@ -4,17 +4,36 @@ import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
 import BackgroundImg from "@assets/background.png";
 
+import { useAuth } from "@hooks/useAuth";
+
 import LogoSvg from "@assets/logo.svg";
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { Controller, useForm } from "react-hook-form";
+
+type FormDataProps = {
+  email: string;
+  password: string;
+};
 
 export function SignIn() {
+  const { signIn } = useAuth();
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   function handleNewAccount() {
     navigation.navigate("signUp");
   }
+
+  function handleSignin({ email, password }: FormDataProps) {
+    signIn(email, password);
+  }
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>();
 
   return (
     <ScrollView
@@ -47,15 +66,39 @@ export function SignIn() {
           </Heading>
         </Center>
 
-        <Input
-          placeholder="E-mail"
-          keyboardType="email-address"
-          autoCapitalize="none"
+        <Controller
+          control={control}
+          name="email"
+          rules={{ required: "Informe o e-mail" }}
+          render={({ field: { onChange, value } }) => (
+            <Input
+              placeholder="E-mail"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.email?.message}
+            />
+          )}
         />
 
-        <Input placeholder="Senha" secureTextEntry />
+        <Controller
+          control={control}
+          name="password"
+          rules={{ required: "Informe a senha" }}
+          render={({ field: { onChange, value } }) => (
+            <Input
+              placeholder="Senha"
+              secureTextEntry
+              autoCapitalize="none"
+              onChangeText={onChange}
+              value={value}
+              errorMessage={errors.password?.message}
+            />
+          )}
+        />
 
-        <Button title="Acessar" />
+        <Button title="Acessar" onPress={handleSubmit(handleSignin)} />
 
         <Center mt={24}>
           <Text color="gray.100" fontSize="sm" mb={3}>
