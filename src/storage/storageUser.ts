@@ -11,9 +11,13 @@ export async function storageUserSave(user: UserDTO) {
 export async function storageUserGet() {
   try {
     const storage = await AsyncStorage.getItem(USER_STORAGE);
-    const user: UserDTO = storage ? JSON.parse(storage) : [];
+    const user: UserDTO = storage ? JSON.parse(storage) : {};
     return user;
   } catch (error) {
     throw error;
   }
+}
+
+export async function storageUserRemove() {
+  await AsyncStorage.removeItem(USER_STORAGE);
 }
