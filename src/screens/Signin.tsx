@@ -1,4 +1,13 @@
-import { VStack, Image, Text, Center, Heading, ScrollView } from "native-base";
+import { useState } from "react";
+import {
+  VStack,
+  Image,
+  Text,
+  Center,
+  Heading,
+  ScrollView,
+  useToast,
+} from "native-base";
 
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
 
@@ -11,6 +20,7 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
+import { AppError } from "@utils/AppError";
 
 type FormDataProps = {
   email: string;
@@ -18,15 +28,35 @@ type FormDataProps = {
 };
 
 export function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const { signIn } = useAuth();
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  const toast = useToast();
 
   function handleNewAccount() {
     navigation.navigate("signUp");
   }
 
-  function handleSignin({ email, password }: FormDataProps) {
-    signIn(email, password);
+  async function handleSignin({ email, password }: FormDataProps) {
+    try {
+      setIsLoading(true);
+      await signIn(email, password);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possivel conectar. Tente mais tarde";
+
+      setIsLoading(false);
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
   }
 
   const {
@@ -98,7 +128,11 @@ export function SignIn() {
           )}
         />
 
-        <Button title="Acessar" onPress={handleSubmit(handleSignin)} />
+        <Button
+          title="Acessar"
+          onPress={handleSubmit(handleSignin)}
+          isLoading={isLoading}
+        />
 
         <Center mt={24}>
           <Text color="gray.100" fontSize="sm" mb={3}>
