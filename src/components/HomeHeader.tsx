@@ -23,7 +23,7 @@ export function HomeHeader() {
           Ola
         </Text>
         <Heading color="gray.100" fontSize={"md"} fontFamily={"heading"}>
-          {user.id}
+          {user.name}
         </Heading>
       </VStack>
 

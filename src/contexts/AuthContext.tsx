@@ -8,6 +8,10 @@ import {
 
 import { api } from "@services/api";
 import { UserDTO } from "@dtos/UserDTO";
+import {
+  storageAuthTokenRemove,
+  storageAuthTokenSave,
+} from "@storage/storageAuthToken";
 
 export type AuthContextDataProps = {
   user: UserDTO;
@@ -33,9 +37,10 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
     try {
       const { data } = await api.post("/sessions", { email, password });
 
-      if (data.user) {
+      if (data.user && data.token) {
         setUser(data.user);
-        storageUserSave(data.user);
+        await storageUserSave(data.user);
+        await storageAuthTokenSave(data.token);
       }
     } catch (error) {
       throw error;
@@ -47,6 +52,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       setIsLoadingUserStorageData(true);
       setUser({} as UserDTO);
       await storageUserRemove();
+      await storageAuthTokenRemove();
     } catch (error) {
       throw error;
     } finally {

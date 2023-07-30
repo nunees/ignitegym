@@ -20,10 +20,13 @@ export function Routes() {
     return <Loading />;
   }
 
+  console.log(user);
+
   return (
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>
-        {user.id ? <AuthRoutes /> : <AppRoutes />}
+        {/*user.id !== undefined ? <AuthRoutes /> : <AppRoutes />*/}
+        {!user.id ? <AuthRoutes /> : <AppRoutes />}
       </NavigationContainer>
     </Box>
   );

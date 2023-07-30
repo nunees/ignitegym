@@ -22,6 +22,8 @@ import { api } from "@services/api";
 import { Alert } from "react-native";
 import axios from "axios";
 import { AppError } from "@utils/AppError";
+import { useState } from "react";
+import { useAuth } from "@hooks/useAuth";
 
 type FormDateProps = {
   name: string;
@@ -42,7 +44,11 @@ const signupSchema = yup.object().shape({
 });
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const toast = useToast();
+
+  const { signIn } = useAuth();
 
   const {
     control,
@@ -70,12 +76,15 @@ export function SignUp() {
     password,
   }: FormDateProps) {
     try {
-      const response = await api.post("/users", {
+      setIsLoading(true);
+      await api.post("/users", {
         name,
         email,
         password,
       });
+      await signIn(email, password);
     } catch (error) {
+      setIsLoading(false);
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
@@ -180,6 +189,7 @@ export function SignUp() {
           <Button
             title="Criar e acesssar"
             onPress={handleSubmit(handleSignup)}
+            isLoading={isLoading}
           />
 
           <Button
