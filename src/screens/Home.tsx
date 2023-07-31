@@ -20,8 +20,8 @@ export function Home() {
 
   const toast = useToast();
 
-  function handleOpenExercisesDetails() {
-    navigation.navigate("exercise");
+  function handleOpenExercisesDetails(exerciseId: string) {
+    navigation.navigate("exercise", { exerciseId });
   }
 
   async function fetchGroups() {
@@ -116,7 +116,10 @@ export function Home() {
             data={exercises}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-              <ExerciseCard onPress={handleOpenExercisesDetails} data={item} />
+              <ExerciseCard
+                onPress={() => handleOpenExercisesDetails(item.id)}
+                data={item}
+              />
             )}
             showsVerticalScrollIndicator={false}
             _contentContainerStyle={{
