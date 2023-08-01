@@ -12,19 +12,37 @@ import {
   Toast,
   useToast,
 } from "native-base";
+import { Controller, useForm } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
 import { FileInfo } from "expo-file-system";
 import { useState } from "react";
 import { Alert, TouchableOpacity } from "react-native";
+import { useAuth } from "@hooks/useAuth";
 
 const PHOTO_SIZE = 33;
+
+type FormDataProps = {
+  name: string;
+  email: string;
+  password: string;
+  old_password: string;
+  confirm_password: string;
+};
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState("https://github.com/nunees.png");
 
   const toast = useToast();
+  const { user } = useAuth();
+
+  const { control } = useForm<FormDataProps>({
+    defaultValues: {
+      name: user.name,
+      email: user.email,
+    },
+  });
 
   async function handleUserPhotoSelect() {
     try {
@@ -97,8 +115,33 @@ export function Profile() {
             </Text>
           </TouchableOpacity>
 
-          <Input placeholder="Nome" bg={"gray.600"} />
-          <Input placeholder="Email" bg={"gray.600"} isDisabled />
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { value, onChange } }) => (
+              <Input
+                placeholder="Nome"
+                bg={"gray.600"}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { value, onChange } }) => (
+              <Input
+                editable={false}
+                placeholder="Email"
+                isDisabled
+                bg={"gray.600"}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
         </Center>
 
         <VStack px={10} mt={12} mb={9}>
