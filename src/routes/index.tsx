@@ -20,8 +20,6 @@ export function Routes() {
     return <Loading />;
   }
 
-  console.log(user);
-
   return (
     <Box flex={1} bg="gray.700">
       <NavigationContainer theme={theme}>
